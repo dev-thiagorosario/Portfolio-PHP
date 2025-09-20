@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 function encaminharUsuario($user) {
     if ($user['id'] === 1 || $user['id'] === 2) {

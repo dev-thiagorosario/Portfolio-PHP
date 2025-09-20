@@ -1,6 +1,11 @@
 <?php
+include_once '../repository/authenticatedUser.php';
+$user = getAuthenticatedUser(); // Redireciona automaticamente se não logado
+?>
+
+<?php
 // home.php
-session_start();
+
 
 // Verifica se o usuário está logado
 if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
