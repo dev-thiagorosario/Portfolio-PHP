@@ -1,13 +1,8 @@
 <?php
 include_once '../repository/authenticatedUser.php';
-$user = getAuthenticatedUser(); // Redireciona automaticamente se não logado
-?>
+$user = getAuthenticatedUser();
 
-<?php
-// home.php
-
-
-// Verifica se o usuário está logado
+// Verifica se o usuário está logado (redundante, mas mantido)
 if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
     header('Location: /pages/index.php');
     exit();

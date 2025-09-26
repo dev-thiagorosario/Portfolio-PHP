@@ -1,10 +1,9 @@
 <?php
 include_once '../repository/authenticatedUser.php';
-$user = getAuthenticatedUser(); // Redireciona automaticamente se não logado
-
-// Pega o nome do usuário da sessão
-$usuario = $_SESSION['usuario_nome'] ?? 'Usuário';
+$user = getAuthenticatedUser(); 
+ header('Location: /pages/index.php?erro=2');
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -32,24 +31,23 @@ $usuario = $_SESSION['usuario_nome'] ?? 'Usuário';
       text-align: center;
       margin-bottom: 30px;
     }
-    .sidebar ul {
-      list-style: none;
+    .sidebar nav {
       padding: 0;
     }
-    .sidebar ul li a {
-      padding: 12px 20px;
+    .sidebar nav a {
       display: flex;
       align-items: center;
-      cursor: pointer;
+      gap: 10px;
       text-decoration: none;
       color: #fff;
-      width: 100%;
+      padding: 12px 20px;
+      border-radius: 10px;
+      transition: background .2s;
+      font-weight: 500;
+      margin-bottom: 5px;
     }
-    .sidebar ul li a:hover {
-      background: #1f2937;
-    }
-    .sidebar ul li a i {
-      margin-right: 10px;
+    .sidebar nav a:hover {
+      background: rgba(255,255,255,.06);
     }
     .logout {
       margin: 20px;
@@ -145,11 +143,11 @@ $usuario = $_SESSION['usuario_nome'] ?? 'Usuário';
   <!-- Sidebar -->
   <div class="sidebar">
     <h2><?php echo htmlspecialchars($usuario); ?></h2>
-    <ul>
-      <li><a href="home.php">🏠 Início</a></li>
-      <li><a href="meus-chamados.php">📑 Meus chamados</a></li>
-      <li><a href="perfil.php">👤 Perfil</a></li>
-    </ul>
+    <nav>
+      <a href="home.php">🏠 <span>Início</span></a>
+      <a href="meus-chamados.php">📄 <span>Meus chamados</span></a>
+      <a href="perfil.php">👤 <span>Perfil</span></a>
+    </nav>
     <form action="logout.php" method="post">
       <button class="logout" type="submit">Desconectar</button>
     </form>

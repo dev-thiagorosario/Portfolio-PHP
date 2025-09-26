@@ -17,25 +17,3 @@ function getAuthenticatedUser() {
     }
 }
 
-// Função auxiliar para verificar apenas se está autenticado (retorna boolean)
-function isAuthenticated() {
-    return isset($_SESSION['logado']) && $_SESSION['logado'] === true && isset($_SESSION['usuario_id']);
-}
-
-// Função para verificar autenticação sem redirecionamento automático
-function checkAuthentication() {
-    if (isset($_SESSION['logado']) && $_SESSION['logado'] === true && isset($_SESSION['usuario_id'])) {
-        return [
-            'authenticated' => true,
-            'user_id' => $_SESSION['usuario_id'],
-            'user_name' => $_SESSION['usuario_nome'] ?? null,
-            'user_email' => $_SESSION['usuario_email'] ?? null
-        ];
-    }
-    
-    return [
-        'authenticated' => false
-    ];
-}
-
-?>
