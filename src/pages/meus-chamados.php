@@ -1,11 +1,10 @@
 <?php
-include_once '../repository/authenticatedUser.php';
-$user = getAuthenticatedUser(); 
- header('Location: /pages/index.php?erro=2');
+include_once '../repository/access_validator.php';
+$user = getAuthenticatedUser();
 ?>
 
 <?php
-session_start();
+
 
 $_SESSION['usuario_email'] = $_SESSION['usuario_email'] ?? 'thiago@teste.com';
 
@@ -105,7 +104,7 @@ function badge($status){
     <div class="brand">💬 HelpDesk</div>
     <nav>
       <ul class="nav">
-        <li><a href="index.php">🏠 Início</a></li>
+        <li><a href="home.php">🏠 Início</a></li>
         <li><a class="active" href="meus-chamados.php">📑 Meus chamados</a></li>
         <li><a href="perfil.php">👤 Perfil</a></li>
       </ul>
@@ -116,7 +115,7 @@ function badge($status){
   <main class="main">
     <div class="top">
       <h1>📑 Meus chamados</h1>
-      <a class="muted" href="index.php">Início</a>
+      <a class="muted" href="home.php">Início</a>
     </div>
 
     <section class="card">

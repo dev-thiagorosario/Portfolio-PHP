@@ -1,12 +1,10 @@
 <?php
-include_once '../repository/authenticatedUser.php';
-$user = getAuthenticatedUser(); 
- header('Location: /pages/index.php?erro=2');
+include_once '../repository/access_validator.php';
+$user = getAuthenticatedUser();
 ?>
 
 <?php
-session_start();
-// Exemplos vindos do login:
+
 $_SESSION['usuario_nome']  = $_SESSION['usuario_nome']  ?? 'Thiago Rosario';
 $_SESSION['usuario_email'] = $_SESSION['usuario_email'] ?? 'thiago@teste.com';
 ?>

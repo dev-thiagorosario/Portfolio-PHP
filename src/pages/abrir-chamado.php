@@ -1,9 +1,16 @@
 <?php
 include_once '../repository/authenticatedUser.php';
-$user = getAuthenticatedUser(); 
- header('Location: /pages/index.php?erro=2');
-?>
+$user = getAuthenticatedUser();
 
+// Verifica se o usuário está logado
+if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
+    header('Location: /pages/index.php');
+    exit();
+}
+
+// Pega o nome do usuário da sessão
+$usuario = $_SESSION['usuario_nome'] ?? 'Usuário';
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -157,7 +164,7 @@ $user = getAuthenticatedUser();
   <div class="main">
     <div class="header">
       <h1>📝 Abrir Chamado</h1>
-      <a href="index.php">Início</a>
+      <a href="home.php">Início</a>
     </div>
 
     <div class="card">

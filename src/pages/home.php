@@ -1,16 +1,8 @@
 <?php
-include_once '../repository/authenticatedUser.php';
-$user = getAuthenticatedUser();
-
-// Verifica se o usuário está logado (redundante, mas mantido)
-if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
-    header('Location: /pages/index.php');
-    exit();
-}
-
-// Pega o nome do usuário da sessão
-$usuario = $_SESSION['usuario_nome'] ?? 'Usuário';
+include_once '../repository/access_validator.php';
+ $user = getAuthenticatedUser();
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
