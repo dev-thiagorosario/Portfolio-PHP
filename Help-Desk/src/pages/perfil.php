@@ -3,11 +3,7 @@ include_once '../repository/access_validator.php';
 $user = getAuthenticatedUser();
 ?>
 
-<?php
 
-$_SESSION['usuario_nome']  = $_SESSION['usuario_nome']  ?? 'Thiago Rosario';
-$_SESSION['usuario_email'] = $_SESSION['usuario_email'] ?? 'thiago@teste.com';
-?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
