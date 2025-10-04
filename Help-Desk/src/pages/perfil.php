@@ -52,7 +52,7 @@ $_SESSION['usuario_email'] = $_SESSION['usuario_email'] ?? 'thiago@teste.com';
     <div class="brand">💬 HelpDesk</div>
     <nav>
       <ul class="nav">
-        <li><a href="index.php">🏠 Início</a></li>
+        <li><a href="home.php">🏠 Início</a></li>
         <li><a href="meus-chamados.php">📑 Meus chamados</a></li>
         <li><a class="active" href="perfil.php">👤 Perfil</a></li>
       </ul>
@@ -63,7 +63,7 @@ $_SESSION['usuario_email'] = $_SESSION['usuario_email'] ?? 'thiago@teste.com';
   <main class="main">
     <div class="top">
       <h1>👤 Perfil de usuário</h1>
-      <a class="muted" href="index.php">Início</a>
+      <a class="muted" href="home.php">Início</a>
     </div>
 
     <section class="card">
