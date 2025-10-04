@@ -169,7 +169,7 @@ $usuario = $_SESSION['usuario_nome'] ?? 'Usuário';
 
     <div class="card">
       <h2>Formulário de Novo Chamado</h2>
-      <form action="processa_chamado.php" method="POST">
+      <form action="/repository/registra-chamado.php" method="POST">
         <div class="form-group">
           <label for="titulo">Título do Chamado</label>
           <input type="text" id="titulo" name="titulo" required>
