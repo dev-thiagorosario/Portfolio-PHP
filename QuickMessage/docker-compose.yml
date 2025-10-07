@@ -1,9 +1,7 @@
-version: "3.9"
-
 services:
   app:
     build: .
-    container_name: send-mail-php
+    container_name: quickmessage-php
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
@@ -11,49 +9,19 @@ services:
       TZ: America/Bahia
     networks:
       - appnet
-    depends_on:
-      - db
 
   nginx:
     image: nginx:1.27-alpine
-    container_name: send-mail-nginx
+    container_name: quickmessage-nginx
     ports:
-      - "8080:80"   # Acesse em http://localhost:8080
+      - "8080:80"                    # Acesse em http://localhost:8080
     volumes:
       - ./:/var/www/html:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-    networks:
-      - appnet
     depends_on:
       - app
-
-  db:
-    image: postgres:16-alpine
-    container_name: send-mail-postgres
-    environment:
-      POSTGRES_DB: sendmail
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      TZ: America/Bahia
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"   # opcional: expõe para cliente local
     networks:
       - appnet
-
-  mailhog:
-    image: mailhog/mailhog:v1.0.1
-    container_name: send-mail-mailhog
-    ports:
-      - "8025:8025"   # UI em http://localhost:8025
-    expose:
-      - "1025"        # SMTP interno para Laravel
-    networks:
-      - appnet
-
-volumes:
-  db-data:
 
 networks:
   appnet:

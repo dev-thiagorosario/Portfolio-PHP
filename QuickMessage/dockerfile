@@ -1,48 +1,31 @@
-# PHP-FPM 8.4 em Alpine (leve e rápido)
+# PHP-FPM 8.4 (Alpine)
 FROM php:8.4-fpm-alpine
 
-# Pacotes do sistema e bibliotecas de desenvolvimento
-RUN apk add --no-cache \
-    bash git unzip tzdata icu-dev oniguruma-dev libzip-dev \
-    libpng-dev libjpeg-turbo-dev freetype-dev libpq-dev
+# Pacotes úteis mínimos
+RUN apk add --no-cache bash tzdata
 
-# Extensões PHP necessárias para Laravel
-# - intl, mbstring, zip
-# - gd (com jpeg/freetype)
-# - pdo_mysql e pdo_pgsql
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
- && docker-php-ext-install -j"$(nproc)" \
-    intl mbstring zip gd pdo_mysql pdo_pgsql opcache
+# Opcache (opcional mas recomendado)
+RUN docker-php-ext-install opcache
 
 # Timezone
 ENV TZ=America/Bahia
 RUN echo "date.timezone=${TZ}" > /usr/local/etc/php/conf.d/timezone.ini
 
-# Habilitar recomendações do OPcache (produção/qa)
+# Hardening básico (opcional)
 RUN { \
+      echo "cgi.fix_pathinfo=0"; \
       echo "opcache.enable=1"; \
       echo "opcache.enable_cli=1"; \
-      echo "opcache.jit=1255"; \
-      echo "opcache.jit_buffer_size=128M"; \
-      echo "opcache.memory_consumption=256"; \
-      echo "opcache.max_accelerated_files=20000"; \
-    } > /usr/local/etc/php/conf.d/opcache-recommended.ini
+      echo "opcache.memory_consumption=128"; \
+      echo "opcache.max_accelerated_files=10000"; \
+    } > /usr/local/etc/php/conf.d/custom.ini
 
-# Composer (copiado da imagem oficial do Composer)
+# Composer (útil para libs futuras)
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Diretório de trabalho dentro do container
 WORKDIR /var/www/html
-
-# (Opcional) copie apenas os manifests e instale dependências em build
-# COPY composer.json composer.lock ./
-# RUN composer install --no-dev --prefer-dist --no-scripts --no-interaction
-
-# Copie o código (para builds imutáveis; em dev o volume sobrescreve)
-# COPY . .
-
-# Permissões para pastas de cache do Laravel (em dev ajuste no host também)
-RUN mkdir -p storage bootstrap/cache \
- && chown -R www-data:www-data storage bootstrap/cache
+ 
 
 EXPOSE 9000
 CMD ["php-fpm", "-F"]
