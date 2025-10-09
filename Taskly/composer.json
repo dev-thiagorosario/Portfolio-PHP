@@ -1,0 +1,18 @@
+{
+    "name": "thiago_souza/taskly",
+    "description": "Aplicativo de lista de tarefas simples desenvolvido em PHP e PostgreSQL.",
+    "autoload": {
+        "psr-4": {
+            "ThiagoSouza\\Taskly\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Thiago Rosario Souza",
+            "email": "147452580+dev-thiagorosario@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

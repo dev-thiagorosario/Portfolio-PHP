@@ -1,0 +1,48 @@
+# Dockerfile
+FROM php:8.4-fpm-alpine
+
+# Dependências e extensões
+RUN apk add --no-cache \
+      $PHPIZE_DEPS \
+      icu-dev \
+      libpq-dev \
+      tzdata \
+  && docker-php-ext-configure intl \
+  && docker-php-ext-install -j"$(nproc)" intl pdo pdo_pgsql opcache \
+  && apk del $PHPIZE_DEPS
+
+# Timezone
+ENV TZ=America/Bahia
+RUN echo "${TZ}" > /etc/timezone \
+ && ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
+ && echo "date.timezone=${TZ}" > /usr/local/etc/php/conf.d/timezone.ini
+
+# Ajustes PHP (opcache básico + prod-ish)
+RUN { \
+      echo "opcache.enable=1"; \
+      echo "opcache.enable_cli=1"; \
+      echo "opcache.jit_buffer_size=64M"; \
+      echo "opcache.memory_consumption=128"; \
+      echo "opcache.interned_strings_buffer=16"; \
+      echo "opcache.max_accelerated_files=10000"; \
+    } > /usr/local/etc/php/conf.d/opcache.ini \
+ && { \
+      echo "display_errors=0"; \
+      echo "log_errors=1"; \
+      echo "memory_limit=512M"; \
+      echo "post_max_size=20M"; \
+      echo "upload_max_filesize=20M"; \
+    } > /usr/local/etc/php/conf.d/custom.ini
+
+WORKDIR /var/www/html
+
+# (Opcional) Composer – útil quando começar a integrar backend
+RUN php -r "copy('https://getcomposer.org/installer','composer-setup.php');" \
+ && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+ && rm composer-setup.php
+
+# Porta do PHP-FPM
+EXPOSE 9000
+
+# Usuário (mantém root para simplificar permissões em dev; ajuste se quiser)
+CMD ["php-fpm"]

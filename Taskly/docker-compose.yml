@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  web:
+    image: nginx:1.27-alpine
+    container_name: taskly-web
+    depends_on:
+      - app
+    ports:
+      - "${NGINX_PORT:-8080}:80"
+    volumes:
+      - ./:/var/www/html:cached
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    environment:
+      - APP_NAME=${APP_NAME}
+      - APP_ENV=${APP_ENV}
+    networks:
+      - taskly-net
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: taskly-php
+    environment:
+      TZ: ${TIMEZONE}
+      PHP_MEMORY_LIMIT: ${PHP_MEMORY_LIMIT}
+      PHP_UPLOAD_MAX_FILESIZE: ${PHP_UPLOAD_MAX_FILESIZE}
+      PHP_POST_MAX_SIZE: ${PHP_POST_MAX_SIZE}
+      DB_CONNECTION: ${DB_CONNECTION}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./:/var/www/html:cached
+    networks:
+      - taskly-net
+
+  db:
+    image: postgres:17-alpine
+    container_name: taskly-db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      TZ: ${TIMEZONE}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "${DB_PORT}:5432"
+    networks:
+      - taskly-net
+
+networks:
+  taskly-net:
+
+volumes:
+  pgdata:
