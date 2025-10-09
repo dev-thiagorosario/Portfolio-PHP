@@ -1,7 +1,7 @@
 <?php
 
     class Connection{
-        private $host = 'localhost';
+        private $host = 'db';
         private $dbname = 'taskly';
         private $username = 'taskly_user';
         private $password = 'taskly_pass';

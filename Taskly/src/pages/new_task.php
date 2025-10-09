@@ -120,12 +120,14 @@ footer{max-width:1000px; margin:24px auto 36px; padding:0 20px; color:var(--mute
             <option value="cancelada" disabled>Cancelada</option>
           </select>
         </div>
-    </form>
-     <div class="actions">
+      </div>
+
+      <div class="actions">
         <button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
         <a class="btn btn-ghost" href="all_tasks.php"><i class="fa-solid fa-list-check"></i> Ver tarefas</a>
         <a class="btn btn-ghost" href="index.php"><i class="fa-solid fa-house"></i> Início</a>
       </div>
+    </form>
   </section>
 </main>
 
