@@ -82,7 +82,7 @@ footer{max-width:1000px; margin:24px auto 36px; padding:0 20px; color:var(--mute
     <h1><i class="fa-solid fa-plus"></i> Nova tarefa</h1>
 
    
-    <form class="form" method="post" name="tarefa" action="../core/task_controller.php" novalidate>
+    <form class="form" method="post" name="tarefa" action="../core/task_controller.php?acao=inserir" novalidate>
       <div class="row">
         <div>
           <label class="label" for="titulo">Título</label>

@@ -30,7 +30,7 @@ try {
     $sqlTarefa = "
         CREATE TABLE IF NOT EXISTS tarefa (
             id SERIAL PRIMARY KEY,
-            id_status INTEGER NOT NULL REFERENCES status(id),
+            id_status VARCHAR(50) NOT NULL REFERENCES status(nome),
             tarefa VARCHAR(255) NOT NULL,
             data_cadastrada TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             responsavel VARCHAR(255)

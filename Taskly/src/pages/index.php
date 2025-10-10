@@ -1,3 +1,10 @@
+<?php
+require_once __DIR__ . '/../core/task_validator.php';
+
+$validador = new ValidaTarefaIndex();
+$tarefas = $validador->validarTarefas();
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -79,7 +86,7 @@ main {
 .duedate.soon{color:var(--warning); font-weight:900}
 
 /* ações bem discretas */
-.actions{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+.actions{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; align-items:center}
 .action-btn{
   border:1px solid rgba(2,6,23,.12); background:var(--card); color:var(--text);
   padding:8px 12px; border-radius:10px; font-weight:800; display:inline-flex; align-items:center; gap:8px;
@@ -116,6 +123,42 @@ footer{max-width:1100px; margin:var(--s6) auto var(--s6); padding:0 20px; color:
   justify-self: end; /* alinha à direita no grid */
   box-sizing: border-box;
 }
+
+.status-form{display:flex; gap:10px; align-items:center; margin-top:12px; flex-wrap:wrap}
+.sr-only{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  border:0;
+}
+.status-select{
+  min-width:170px;
+  border:1px solid rgba(2,6,23,.18);
+  border-radius:10px;
+  padding:8px 12px;
+  font:inherit;
+  background:var(--card);
+  color:var(--text);
+}
+.status-submit{
+  border:none;
+  border-radius:10px;
+  padding:9px 14px;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--brand),#5b8eff);
+  color:#fff;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition:background .2s ease, transform .05s ease;
+}
+.status-submit:hover{background:var(--brand-600)}
+.status-submit:active{transform:translateY(1px)}
 </style>
 </head>
 <body>
@@ -143,7 +186,64 @@ footer{max-width:1100px; margin:var(--s6) auto var(--s6); padding:0 20px; color:
     </div>
 
     <ul class="list" aria-label="Tarefas em destaque">
-     
+      <?php if (count($tarefas) === 0): ?>
+        <li class="empty"><i class="fa-regular fa-circle-check"></i> Nenhuma tarefa pendente por aqui. Aproveite para criar uma nova!</li>
+      <?php else: ?>
+        <?php foreach ($tarefas as $tarefa): ?>
+          <?php
+            $status = (string) ($tarefa['id_status'] ?? '');
+            $statusClass = str_replace('_', '-', strtolower($status));
+            $statusLabel = ucwords(str_replace('_', ' ', strtolower($status)));
+            $responsavel = trim((string) ($tarefa['responsavel'] ?? ''));
+            $dataLimite = $tarefa['data_cadastrada'] ?? null;
+            $dataFormatada = $dataLimite;
+            $statusDisponiveis = ['andamento', 'concluida', 'cancelada'];
+            $statusSelecionavel = in_array($status, $statusDisponiveis, true) ? $status : '';
+
+            if (!empty($dataLimite)) {
+                try {
+                    $dataFormatada = (new \DateTime($dataLimite))->format('d/m/Y');
+                } catch (\Exception $exception) {
+                    $dataFormatada = (string) $dataLimite;
+                }
+            }
+          ?>
+          <li class="item">
+            <div>
+              <div class="title"><?= htmlspecialchars((string) ($tarefa['tarefa'] ?? ''), ENT_QUOTES, 'UTF-8') ?></div>
+              <div class="meta">
+                <span class="badge <?= htmlspecialchars($statusClass, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($statusLabel, ENT_QUOTES, 'UTF-8') ?></span>
+                <?php if ($responsavel !== ''): ?>
+                  <span><i class="fa-solid fa-user"></i> <?= htmlspecialchars($responsavel, ENT_QUOTES, 'UTF-8') ?></span>
+                <?php endif; ?>
+                <?php if (!empty($dataLimite)): ?>
+                  <span class="duedate"><i class="fa-solid fa-calendar"></i> <?= htmlspecialchars($dataFormatada, ENT_QUOTES, 'UTF-8') ?></span>
+                <?php endif; ?>
+              </div>
+              <form class="status-form" action="../core/update_task_status.php" method="post" name="id_status_form">
+                <input type="hidden" name="id" value="<?= htmlspecialchars((string) ($tarefa['id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+                <input type="hidden" name="redirect_to" value="index.php">
+                <label class="sr-only" for="status-<?= htmlspecialchars((string) ($tarefa['id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">Alterar status</label>
+                <select
+                  class="status-select"
+                  name="id_status"
+                  id="status-<?= htmlspecialchars((string) ($tarefa['id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+                >
+                  <option value="" disabled <?= $statusSelecionavel === '' ? 'selected' : '' ?>>Selecionar status</option>
+                  <option value="andamento" <?= $statusSelecionavel === 'andamento' ? 'selected' : '' ?>>Em andamento</option>
+                  <option value="concluida" <?= $statusSelecionavel === 'concluida' ? 'selected' : '' ?>>Concluída</option>
+                  <option value="cancelada" <?= $statusSelecionavel === 'cancelada' ? 'selected' : '' ?>>Cancelada</option>
+                </select>
+                <button class="status-submit" type="submit">
+                  <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+                  <span>Atualizar</span>
+                </button>
+              </form>
+            </div>
+          </li>
+        <?php endforeach; ?>
+      <?php endif; ?>
+    </ul>
   </section>
 
   <aside class="panel cta" aria-label="Ações rápidas">

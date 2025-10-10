@@ -1,16 +1,23 @@
 <?php
 
-    session_start();
+session_start();
 
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        header('Location: ../pages/new_task.php');
-        exit;
-    }
+require_once __DIR__ . '/../service/task.service.php';
+require_once __DIR__ . '/../core/task.php';
+require_once __DIR__ . '/../database/connection.php';
 
-    require_once __DIR__ . '/../service/task.service.php';
-    require_once __DIR__ . '/../core/task.php';
-    require_once __DIR__ . '/../database/connection.php';
+$acao = $acao ?? $_GET['acao'] ?? $_POST['acao'] ?? null;
 
+if ($acao === 'recuperar') {
+    $tarefa = new Tarefa();
+    $conexao = new Connection();
+
+    $tarefaService = new TaskService($conexao, $tarefa);
+    $tarefas = $tarefaService->listarTarefas();
+    return;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $acao === 'inserir') {
     $payload = [
         'id'              => null,
         'id_status'       => trim($_POST['status'] ?? ''),
@@ -21,13 +28,13 @@
     $prioridade = trim($_POST['urgencia'] ?? '');
 
     $tarefa = new Tarefa();
-    $tarefa -> setId($payload['id']);
-    $tarefa -> setId_status($payload['id_status']);
-    $tarefa -> setTarefa($payload['tarefa']);
+    $tarefa->setId($payload['id']);
+    $tarefa->setId_status($payload['id_status']);
+    $tarefa->setTarefa($payload['tarefa']);
     $dataCadastrada = $payload['data_cadastrada'] === '' ? null : $payload['data_cadastrada'];
-    $tarefa -> setData_cadastrada($dataCadastrada);
-    $tarefa -> setResponsavel($payload['responsavel']);
-    $tarefa -> setPrioridade($prioridade);
+    $tarefa->setData_cadastrada($dataCadastrada);
+    $tarefa->setResponsavel($payload['responsavel']);
+    $tarefa->setPrioridade($prioridade);
 
     $conexao = new Connection();
 
@@ -65,3 +72,7 @@
         header('Location: /pages/task_controller.php');
         exit;
     }
+}
+
+header('Location: ../pages/new_task.php');
+exit;
